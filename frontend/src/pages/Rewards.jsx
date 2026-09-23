@@ -7,7 +7,7 @@ import { useWallet } from "../store/walletStore";
 import { useAuth } from "../store/authStore";
 import { notify } from "../utils/toast";
 
-const API = "http://localhost:5000";
+const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function Rewards() {
   const authUser = useAuth((s) => s.user);
@@ -25,7 +25,6 @@ export default function Rewards() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Prefer user's saved wallet from MongoDB, then fall back to connected wallet
     const addr = authUser?.walletAddress || walletAddr || "";
     setInput(addr);
     if (addr) {

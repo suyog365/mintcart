@@ -14,7 +14,7 @@ import { useWallet } from "../store/walletStore";
 import { useAuth } from "../store/authStore";
 import { notify } from "../utils/toast";
 
-const API = "http://localhost:5000";
+const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function Profile() {
   const authUser = useAuth((s) => s.user);
@@ -32,13 +32,11 @@ export default function Profile() {
   const [savingWallet, setSavingWallet] = useState(false);
 
   useEffect(() => {
-    // Prefer user's saved wallet from MongoDB, then fall back to connected wallet
     const addr = authUser?.walletAddress || walletAddr || "";
     setInput(addr);
     if (addr) {
       loadHistory(addr);
     } else {
-      // New user — clear any stale data
       setOrders([]);
       setRedemptions([]);
       setLocalPoints(0);
@@ -99,7 +97,6 @@ export default function Profile() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
-      {/* Header */}
       <div className="rounded-2xl bg-gradient-to-r from-brand-600 to-purple-600 text-white p-8 mb-8">
         <div className="flex items-center gap-2 mb-2">
           <Sparkles className="w-5 h-5" />
@@ -135,7 +132,6 @@ export default function Profile() {
         </p>
       </div>
 
-      {/* Wallet section */}
       <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 mb-8">
         <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
           <Wallet className="w-4 h-4" />
@@ -183,7 +179,6 @@ export default function Profile() {
         )}
       </div>
 
-      {/* Stats */}
       {input && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <StatCard
@@ -204,7 +199,6 @@ export default function Profile() {
         </div>
       )}
 
-      {/* Orders */}
       {input && (
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -271,7 +265,6 @@ export default function Profile() {
         </motion.div>
       )}
 
-      {/* Redemptions */}
       {input && (
         <motion.div
           initial={{ opacity: 0, y: 12 }}

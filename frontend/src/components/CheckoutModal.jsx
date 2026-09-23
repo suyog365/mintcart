@@ -14,7 +14,7 @@ import { useWallet } from "../store/walletStore";
 import { useAuth } from "../store/authStore";
 import { notify } from "../utils/toast";
 
-const API = "http://localhost:5000";
+const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function CheckoutModal({ open, onClose }) {
   const items = useCart((s) => s.items);
@@ -118,7 +118,6 @@ export default function CheckoutModal({ open, onClose }) {
         return;
       }
 
-      // Save wallet to user account if signed in
       if (authUser && address && !authUser.walletAddress) {
         await setWalletOnUser(address);
       }
