@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useCart, selectTotalItems } from "../store/cartStore";
 import { useTheme } from "../store/themeStore";
 import { useAuth } from "../store/authStore";
+import { useWallet } from "../store/walletStore";
 import { notify } from "../utils/toast";
 import WalletButton from "./WalletButton";
 
@@ -21,6 +22,7 @@ export default function Header({ onCartClick }) {
   const toggle = useTheme((s) => s.toggle);
   const user = useAuth((s) => s.user);
   const logout = useAuth((s) => s.logout);
+  const disconnectWallet = useWallet((s) => s.disconnect);
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -33,6 +35,7 @@ export default function Header({ onCartClick }) {
 
   function handleLogout() {
     logout();
+    disconnectWallet();
     setMenuOpen(false);
     notify.logout();
     navigate("/login");
@@ -67,7 +70,6 @@ export default function Header({ onCartClick }) {
 
         <div className="flex items-center gap-2">
           <WalletButton />
-
           <button
             onClick={toggle}
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"

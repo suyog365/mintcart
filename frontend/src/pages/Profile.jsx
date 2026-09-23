@@ -23,7 +23,7 @@ export default function Profile() {
   const walletAddr = useWallet((s) => s.address);
   const setAddress = useWallet((s) => s.setAddress);
 
-  const [input, setInput] = useState(walletAddr);
+  const [input, setInput] = useState("");
   const [points, setLocalPoints] = useState(0);
   const [orders, setOrders] = useState([]);
   const [redemptions, setRedemptions] = useState([]);
@@ -32,13 +32,19 @@ export default function Profile() {
   const [savingWallet, setSavingWallet] = useState(false);
 
   useEffect(() => {
-    const addr = walletAddr || authUser?.walletAddress;
+    // Prefer user's saved wallet from MongoDB, then fall back to connected wallet
+    const addr = authUser?.walletAddress || walletAddr || "";
+    setInput(addr);
     if (addr) {
-      setInput(addr);
       loadHistory(addr);
+    } else {
+      // New user — clear any stale data
+      setOrders([]);
+      setRedemptions([]);
+      setLocalPoints(0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authUser?._id, authUser?.walletAddress]);
 
   async function loadHistory(addr) {
     if (!addr) return;

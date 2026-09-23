@@ -18,20 +18,23 @@ export default function Rewards() {
   const setAddress = useWallet((s) => s.setAddress);
   const setPoints = useWallet((s) => s.setPoints);
 
-  const [input, setInput] = useState(walletAddr);
+  const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [busyReward, setBusyReward] = useState(null);
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const addr = walletAddr || authUser?.walletAddress;
+    // Prefer user's saved wallet from MongoDB, then fall back to connected wallet
+    const addr = authUser?.walletAddress || walletAddr || "";
+    setInput(addr);
     if (addr) {
-      setInput(addr);
       loadPoints(addr);
+    } else {
+      setPoints(0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authUser?._id, authUser?.walletAddress]);
 
   async function loadPoints(addr) {
     if (!addr) return;
